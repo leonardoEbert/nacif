@@ -11,32 +11,32 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div>
-      <h2>Login</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="username">Username:</label>
-          <input
-            type="text"
-            id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit">Login</button>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit}>
+      <div className="mb-3">
+        <label htmlFor="username" className="form-label">Usuário</label>
+        <input
+          type="text"
+          className="form-control"
+          id="username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          required
+          autoFocus
+        />
+      </div>
+      <div className="mb-3">
+        <label htmlFor="password" className="form-label">Senha</label>
+        <input
+          type="password"
+          className="form-control"
+          id="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+      </div>
+      <button type="submit" className="btn btn-primary w-100">Entrar</button>
+    </form>
   );
 };
 
