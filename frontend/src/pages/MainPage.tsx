@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { authFetch } from '../components/Login';
 
 export interface Todo {
   id: number;
@@ -15,11 +16,10 @@ const MainPage: React.FC = () => {
   const [newDescription, setNewDescription] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Buscar todos
   const fetchTodos = async () => {
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:4000/api/todos');
+      const res = await authFetch('http://localhost:4000/api/todos');
       const data = await res.json();
       console.log('Dados recebidos:', data);
       setTodos(Array.isArray(data) ? data : data.data || []);
@@ -34,12 +34,11 @@ const MainPage: React.FC = () => {
     fetchTodos();
   }, []);
 
-  // Criar novo todo
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newTitle.trim()) return;
+    if (!newTitle.trim() || !newDescription.trim()) return;
     try {
-      const res = await fetch('http://localhost:4000/api/todos', {
+      const res = await authFetch('http://localhost:4000/api/todos', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ todo: { title: newTitle, description: newDescription, done: false } }),
@@ -54,10 +53,9 @@ const MainPage: React.FC = () => {
     }
   };
 
-  // Excluir todo
   const handleDelete = async (id: number) => {
     try {
-      await fetch(`http://localhost:4000/api/todos/${id}`, {
+      await authFetch(`http://localhost:4000/api/todos/${id}`, {
         method: 'DELETE',
       });
       setTodos(todos.filter(todo => todo.id !== id));
@@ -66,10 +64,9 @@ const MainPage: React.FC = () => {
     }
   };
 
-  // Função única para atualizar qualquer campo do todo
   const handleUpdateTodo = async (updatedTodo: Todo) => {
     try {
-      await fetch(`http://localhost:4000/api/todos/${updatedTodo.id}`, {
+      await authFetch(`http://localhost:4000/api/todos/${updatedTodo.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ todo: updatedTodo }),
@@ -85,21 +82,18 @@ const MainPage: React.FC = () => {
     }
   };
 
-  // Para editar título/descrição
   const handleEdit = (id: number, title: string, description: string) => {
     const todo = todos.find(t => t.id === id);
     if (!todo) return;
     handleUpdateTodo({ ...todo, title, description });
   };
 
-  // Para alternar done
   const handleToggleDone = (id: number, done: boolean) => {
     const todo = todos.find(t => t.id === id);
     if (!todo) return;
     handleUpdateTodo({ ...todo, done: !done });
   };
 
-  // Estado para edição inline
   const [editId, setEditId] = useState<number | null>(null);
   const [editTitle, setEditTitle] = useState('');
   const [editDescription, setEditDescription] = useState('');
