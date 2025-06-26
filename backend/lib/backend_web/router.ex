@@ -3,13 +3,21 @@ defmodule BackendWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug BackendWeb.Plugs.Authenticate
+  end
+
+  pipeline :public_api do
+    plug :accepts, ["json"]
+  end
+
+  scope "/api", BackendWeb do
+    pipe_through :public_api
+    post "/login", SessionController, :create
   end
 
   scope "/api", BackendWeb do
     pipe_through :api
-
     resources "/todos", TodoController, except: [:new, :edit]
-    post "/login", SessionController, :create
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
