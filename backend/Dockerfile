@@ -1,4 +1,4 @@
-FROM elixir:1.15.7-alpine
+FROM elixir:1.18.4-otp-27-alpine
 
 RUN apk add --no-cache build-base postgresql-dev bash git
 
