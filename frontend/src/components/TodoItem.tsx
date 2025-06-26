@@ -6,8 +6,8 @@ interface TodoItemProps {
     title: string;
     description: string;
     done: boolean;
-    inserted_at: string;
-    updated_at: string;
+    inserted_at: Date;
+    updated_at: Date;
   };
   onDelete: (id: number) => void;
   onToggle: (id: number) => void;
