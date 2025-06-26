@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
 export const authFetch = async (input: RequestInfo, init: RequestInit = {}) => {
   const token = sessionStorage.getItem('jwt');
@@ -24,7 +25,7 @@ const Login: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:4000/api/login', {
+      const response = await fetch(`${API_BASE_URL}/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -38,7 +39,6 @@ const Login: React.FC = () => {
 
       const data = await response.json();
       sessionStorage.setItem('jwt', data.token);
-      console.log('Login bem-sucedido:', data);
       navigate('/');
     } catch (error) {
       console.error('Erro ao fazer login:', error);

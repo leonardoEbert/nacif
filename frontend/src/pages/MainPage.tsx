@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { authFetch } from '../components/Login';
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
 export interface Todo {
   id: number;
   title: string;
@@ -19,9 +21,8 @@ const MainPage: React.FC = () => {
   const fetchTodos = async () => {
     setLoading(true);
     try {
-      const res = await authFetch('http://localhost:4000/api/todos');
+      const res = await authFetch(`${API_BASE_URL}/todos`);
       const data = await res.json();
-      console.log('Dados recebidos:', data);
       setTodos(Array.isArray(data) ? data : data.data || []);
     } catch (err) {
       console.error('Erro ao buscar todos:', err);
@@ -38,7 +39,7 @@ const MainPage: React.FC = () => {
     e.preventDefault();
     if (!newTitle.trim() || !newDescription.trim()) return;
     try {
-      const res = await authFetch('http://localhost:4000/api/todos', {
+      const res = await authFetch(`${API_BASE_URL}/todos`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ todo: { title: newTitle, description: newDescription, done: false } }),
@@ -55,7 +56,7 @@ const MainPage: React.FC = () => {
 
   const handleDelete = async (id: number) => {
     try {
-      await authFetch(`http://localhost:4000/api/todos/${id}`, {
+      await authFetch(`${API_BASE_URL}/todos/${id}`, {
         method: 'DELETE',
       });
       setTodos(todos.filter(todo => todo.id !== id));
@@ -66,7 +67,7 @@ const MainPage: React.FC = () => {
 
   const handleUpdateTodo = async (updatedTodo: Todo) => {
     try {
-      await authFetch(`http://localhost:4000/api/todos/${updatedTodo.id}`, {
+      await authFetch(`${API_BASE_URL}/todos/${updatedTodo.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ todo: updatedTodo }),
