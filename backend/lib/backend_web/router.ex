@@ -9,6 +9,7 @@ defmodule BackendWeb.Router do
     pipe_through :api
 
     resources "/todos", TodoController, except: [:new, :edit]
+    post "/login", SessionController, :create
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
