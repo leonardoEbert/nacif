@@ -1,25 +1,45 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Login: React.FC = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log('Logging in with:', { username, password });
+    try {
+      const response = await fetch('http://localhost:4000/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Login falhou');
+      }
+
+      const data = await response.json();
+      console.log('Login bem-sucedido:', data);
+      navigate('/'); // redireciona para a home
+    } catch (error) {
+      console.error('Erro ao fazer login:', error);
+      // Exiba uma mensagem de erro para o usuário, se desejar
+    }
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <div className="mb-3">
-        <label htmlFor="username" className="form-label">Usuário</label>
+        <label htmlFor="email" className="form-label">E-mail</label>
         <input
-          type="text"
+          type="email"
           className="form-control"
-          id="username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          id="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           required
           autoFocus
         />
