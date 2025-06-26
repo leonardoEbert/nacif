@@ -20,7 +20,9 @@ defmodule BackendWeb.TodoJSON do
       id: todo.id,
       title: todo.title,
       description: todo.description,
-      done: todo.done
+      done: todo.done,
+      inserted_at: todo.inserted_at,
+      updated_at: todo.updated_at
     }
   end
 end
