@@ -66,36 +66,37 @@ const MainPage: React.FC = () => {
     }
   };
 
-  // Editar todo (title e description)
-  const handleEdit = async (id: number, title: string, description: string) => {
+  // Função única para atualizar qualquer campo do todo
+  const handleUpdateTodo = async (updatedTodo: Todo) => {
     try {
-      await fetch(`http://localhost:4000/api/todos/${id}`, {
+      await fetch(`http://localhost:4000/api/todos/${updatedTodo.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, description }),
+        body: JSON.stringify({ todo: updatedTodo }),
       });
       setTodos(todos.map(todo =>
-        todo.id === id ? { ...todo, title, description } : todo
-      ));
-    } catch (err) {
-      console.error('Erro ao editar todo:', err);
-    }
-  };
-
-  // Alternar done
-  const handleToggleDone = async (id: number, done: boolean) => {
-    try {
-      await fetch(`http://localhost:4000/api/todos/${id}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ done: !done }),
-      });
-      setTodos(todos.map(todo =>
-        todo.id === id ? { ...todo, done: !done } : todo
+        todo.id === updatedTodo.id ? { ...updatedTodo } : todo
       ));
     } catch (err) {
       console.error('Erro ao atualizar todo:', err);
     }
+    finally {
+      cancelEdit();
+    }
+  };
+
+  // Para editar título/descrição
+  const handleEdit = (id: number, title: string, description: string) => {
+    const todo = todos.find(t => t.id === id);
+    if (!todo) return;
+    handleUpdateTodo({ ...todo, title, description });
+  };
+
+  // Para alternar done
+  const handleToggleDone = (id: number, done: boolean) => {
+    const todo = todos.find(t => t.id === id);
+    if (!todo) return;
+    handleUpdateTodo({ ...todo, done: !done });
   };
 
   // Estado para edição inline
@@ -115,11 +116,6 @@ const MainPage: React.FC = () => {
     setEditDescription('');
   };
 
-  const saveEdit = (id: number) => {
-    handleEdit(id, editTitle, editDescription);
-    cancelEdit();
-  };
-
   return (
     <div className="container mt-4">
       <h2>Lista de Todos</h2>
@@ -132,12 +128,15 @@ const MainPage: React.FC = () => {
             value={newTitle}
             onChange={e => setNewTitle(e.target.value)}
             required
+            maxLength={255}
           />
           <textarea
             className="form-control"
             placeholder="Descrição"
             value={newDescription}
             onChange={e => setNewDescription(e.target.value)}
+            required
+            maxLength={255}
           />
         </div>
         <button type="submit" className="btn btn-success">Adicionar</button>
@@ -191,7 +190,7 @@ const MainPage: React.FC = () => {
               <div className="d-flex gap-2">
                 {editId === todo.id ? (
                   <>
-                    <button className="btn btn-primary btn-sm" onClick={() => saveEdit(todo.id)}>Salvar</button>
+                    <button className="btn btn-primary btn-sm" onClick={() => handleEdit(todo.id, editTitle, editDescription)}>Salvar</button>
                     <button className="btn btn-secondary btn-sm" onClick={cancelEdit}>Cancelar</button>
                   </>
                 ) : (
