@@ -10,7 +10,9 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
-Backend.Accounts.create_user(%{
-  email: "ricardo@nacif.xyz",
-  password: "nacif"
-})
+unless Backend.Accounts.get_user_by_email("ricardo@nacif.xyz") do
+  Backend.Accounts.create_user(%{
+    email: "ricardo@nacif.xyz",
+    password: "nacif"
+  })
+end
