@@ -4,7 +4,7 @@ import Config
 config :backend, Backend.Repo,
   username: "nacif",
   password: "nacif",
-  hostname: "host.docker.internal",
+  hostname: "db",
   database: "nacif_dev",
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
